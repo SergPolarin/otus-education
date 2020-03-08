@@ -1,3 +1,4 @@
-Курс "Сетевой инженер" от OTUS.RU
+#### Курс "[Сетевой инженер](https://otus.ru/lessons/setevoy-inzhener/)" от [OTUS.RU](https://otus.ru/)
 
-[Домашние работы](<https://github.com/SergPolarin/otus-education/blob/master/homework>)
+ - [Практические работы](labs/).
+ - [Проектная работа](final/).
