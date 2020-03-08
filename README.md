@@ -1,3 +1,3 @@
 Курс "Сетевой инженер" от OTUS.RU
-    Практические работы.
+    Домашние работы.<https://github.com/SergPolarin/otus-education/blob/master/homework>
     Проектная работа.
