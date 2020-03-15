@@ -21,7 +21,7 @@
 
 ### Часть 1:	Создание сети и настройка основных параметров устройства
 
-##### Шаг 3 Настройте базовые параметры каждого коммутатора
+#### Шаг 3 Настройте базовые параметры каждого коммутатора
 Building configuration...
 
 hostname S1
@@ -34,9 +34,14 @@ spanning-tree mode pvst
 
 spanning-tree extend system-id
 
+...
+
 interface FastEthernet0/1
 
+...
+
 interface Vlan1
+
  ip address 192.168.1.1 255.255.255.0
  
 banner motd ^C UNAUTHORISED ACCESS PROHIBITED ^C
