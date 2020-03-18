@@ -24,7 +24,20 @@
 
 #### Шаг 1:	Настройте PAgP на S1 и S3
 
+
+
+
 S1
+
+Команды настройки:
+
+       conf t
+       int range f0/1-2
+       channel-group 1 mode desirable
+       switchport mode trunk
+       switchport trunk native vlan 99
+       switchport trunk allowed vlan 10,99
+Вывод 
 
        S1#sh etherchannel summary 
         Flags:  D - down        P - bundled in port-channel
@@ -43,6 +56,17 @@ S1
         1      Po1(SU)         PAgP      Fa0/1(P)    Fa0/2(P)    
         
 S2
+
+Команды настройки:
+
+       conf t
+       int range f0/3-4
+       channel-group 1 mode auto
+       switchport mode trunk
+       switchport trunk native vlan 99
+       switchport trunk allowed vlan 10,99
+
+Вывод:
 
         S3#sh etherchannel summary 
         Flags:  D - down        P - in port-channel
@@ -170,6 +194,18 @@ b.	Выполните команды show interfaces trunk и show spanning-tree
         
 ### Часть 3:	Настройка протокола LACP
 
+S1
+
+Команды настройки:
+
+       conf t
+       int range f0/3-4
+       channel-group 2 mode active
+       switchport mode trunk
+       switchport trunk native vlan 99
+       switchport trunk allowed vlan 10,99
+Вывод 
+
         S1#sh etherchannel summary 
         Flags:  D - down        P - bundled in port-channel
                 I - stand-alone s - suspended
@@ -186,12 +222,23 @@ b.	Выполните команды show interfaces trunk и show spanning-tree
         ------+-------------+-----------+-----------------------------------------------
         1      Po1(SU)         PAgP      Fa0/1(P)    Fa0/2(P)    
         2      Po2(SU)         LACP      Fa0/3(P)    Fa0/4(P) 
-        
-        
-        S3#sh etherchannel summary 
+
+S3
+
+Команды настройки:
+
+       conf t
+       int range f0/1-2
+       channel-group 2 mode passive
+       switchport mode trunk
+       switchport trunk native vlan 99
+       switchport trunk allowed vlan 10,99
+Вывод 
+
         
 #### Шаг 4:	Проверьте наличие сквозного соединения.
 
+        S3#sh etherchannel summary 
         Flags:  D - down        P - in port-channel
                 I - stand-alone s - suspended
                 H - Hot-standby (LACP only)
