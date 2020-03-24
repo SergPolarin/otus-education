@@ -458,4 +458,101 @@ h.	Настройте интерфейс S0/0/1 маршрутизатора R2 
 
 #### Шаг 2:	Измените пропускную способность для интерфейса.
 
+Команды
+
+    conf t
+    int s0/0/0
+    bandwidth 128
+
+Вывод после изменения badnwidth на интерфейсе. Cost: изменился с 64 на 781
+
+        R1#sh ip ospf interface 
+        GigabitEthernet0/0 is up, line protocol is up
+          Internet address is 192.168.1.1/24, Area 0
+          Process ID 1, Router ID 11.11.11.11, Network Type BROADCAST, Cost: 1
+          Transmit Delay is 1 sec, State DR, Priority 1
+          Designated Router (ID) 11.11.11.11, Interface address 192.168.1.1
+          No backup designated router on this network
+          Timer intervals configured, Hello 10, Dead 40, Wait 40, Retransmit 5
+            Hello due in 00:00:03
+          Index 1/1, flood queue length 0
+          Next 0x0(0)/0x0(0)
+          Last flood scan length is 1, maximum is 1
+          Last flood scan time is 0 msec, maximum is 0 msec
+          Neighbor Count is 0, Adjacent neighbor count is 0
+          Suppress hello for 0 neighbor(s)
+        Serial0/0/0 is up, line protocol is up
+          Internet address is 192.168.12.1/30, Area 0
+          Process ID 1, Router ID 11.11.11.11, Network Type POINT-TO-POINT, Cost: 781
+          Transmit Delay is 1 sec, State POINT-TO-POINT,
+          Timer intervals configured, Hello 10, Dead 40, Wait 40, Retransmit 5
+            Hello due in 00:00:03
+          Index 2/2, flood queue length 0
+          Next 0x0(0)/0x0(0)
+          Last flood scan length is 1, maximum is 1
+          Last flood scan time is 0 msec, maximum is 0 msec
+          Neighbor Count is 1 , Adjacent neighbor count is 1
+            Adjacent with neighbor 22.22.22.22
+          Suppress hello for 0 neighbor(s)
+        Serial0/0/1 is up, line protocol is up
+          Internet address is 192.168.13.1/30, Area 0
+          Process ID 1, Router ID 11.11.11.11, Network Type POINT-TO-POINT, Cost: 64
+          Transmit Delay is 1 sec, State POINT-TO-POINT,
+          Timer intervals configured, Hello 10, Dead 40, Wait 40, Retransmit 5
+            Hello due in 00:00:01
+          Index 3/3, flood queue length 0
+          Next 0x0(0)/0x0(0)
+          Last flood scan length is 1, maximum is 1
+          Last flood scan time is 0 msec, maximum is 0 msec
+          Neighbor Count is 1 , Adjacent neighbor count is 1
+            Adjacent with neighbor 33.33.33.33
+          Suppress hello for 0 neighbor(s)
+
+
+Команды
+
+    conf t
+    int s0/0/1
+    bandwidth 128
+    
+Вывод
+
+    R1#sh ip route ospf 
+    O    192.168.2.0 [110/782] via 192.168.12.2, 00:00:02, Serial0/0/0
+    O    192.168.3.0 [110/782] via 192.168.13.2, 00:00:02, Serial0/0/1
+         192.168.23.0/30 is subnetted, 1 subnets
+    O       192.168.23.0 [110/845] via 192.168.12.2, 00:00:02, Serial0/0/0
+                         [110/845] via 192.168.13.2, 00:00:02, Serial0/0/1
+                         
+Объясните, как были рассчитаны стоимости маршрутов от маршрутизатора R1 для сетей 192.168.3.0/24 и 192.168.23.0/30. 
+
+Рассчет стоимости маршрута для 192.168.3.0/24 = стоимость интерфейса s0/0/1(Cost:781) + стоимость интерфейса G0/0(Cost:1)
+
+Рассчет стоимости маршрута для 192.168.23.0/30 = стоимость интерфейса R1: s0/0/1(Cost:781) + стоимость интерфейса R3 0/0/1(Cost:64) = 845
+
+i.	Выполните команду bandwidth 128 для всех остальных последовательных интерфейсов в топологии.
+
+Чему равна новая суммарная стоимость для сети 192.168.23.0/24 на R1? Почему? 128. Так как стоимость интерфейсов была изменена путем уменьшения параметра bandwidth на всех последовательных портах маршрутизатора R3, новая стоимость маршрута интерфейса s0/0/1 изменилась с64 на 781. Суммарная стоимость мршрута соответственно изменилась с 845 до 1562
+
+#### Шаг 3:	Измените стоимость маршрута.
+
+Команды
+
+    conf t
+    int s0/0/1
+    ip ospf cost 1565
+    end
+    
+    
+Вывод
+
+    R1#sh ip route ospf 
+    O    192.168.2.0 [110/782] via 192.168.12.2, 00:27:18, Serial0/0/0
+    O    192.168.3.0 [110/1563] via 192.168.12.2, 00:00:02, Serial0/0/0
+         192.168.23.0/30 is subnetted, 1 subnets
+    O       192.168.23.0 [110/1562] via 192.168.12.2, 00:00:02, Serial0/0/0
+    
+Почему маршрут к сети 192.168.3.0/24 от маршрутизатора R1 теперь проходит через R2?
+
+Потому что стоимость канала через интерфейс s0/0/1 суммарно стала больше, а через интерфейс s0/0/0 меньше.
 
