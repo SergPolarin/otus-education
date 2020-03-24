@@ -421,6 +421,41 @@ h.	Настройте интерфейс S0/0/1 маршрутизатора R2 
 
 #### Шаг 1:	Измените заданную пропускную способность для маршрутизаторов.
 
+Команды на всех маршрутизаторах
 
+        conf t
+        router ospf 1
+        auto-cost reference-bandwidth 10000
+        end
+        
+
+Вывод
+
+         R1#sh ip ospf interface s0/0/1
+        Serial0/0/1 is up, line protocol is up
+          Internet address is 192.168.13.1/30, Area 0
+          Process ID 1, Router ID 11.11.11.11, Network Type POINT-TO-POINT, Cost: 6476
+          Transmit Delay is 1 sec, State POINT-TO-POINT,
+          Timer intervals configured, Hello 10, Dead 40, Wait 40, Retransmit 5
+            Hello due in 00:00:05
+          Index 3/3, flood queue length 0
+          Next 0x0(0)/0x0(0)
+          Last flood scan length is 1, maximum is 1
+          Last flood scan time is 0 msec, maximum is 0 msec
+          Neighbor Count is 1 , Adjacent neighbor count is 1
+            Adjacent with neighbor 33.33.33.33
+          Suppress hello for 0 neighbor(s)
+        R1#sh ip ro
+        R1#sh ip route os
+        R1#sh ip route ospf 
+        O    192.168.2.0 [110/6576] via 192.168.12.2, 00:01:59, Serial0/0/0
+        O    192.168.3.0 [110/6576] via 192.168.13.2, 00:01:33, Serial0/0/1
+             192.168.23.0/30 is subnetted, 1 subnets
+        O       192.168.23.0 [110/12952] via 192.168.12.2, 00:01:33, Serial0/0/0
+                             [110/12952] via 192.168.13.2, 00:01:33, Serial0/0/1
+                             
+Почему может понадобиться изменить эталонную пропускную способность OSPF по умолчанию? Для более точной настройки  выбора предпочтительного маршрута
+
+#### Шаг 2:	Измените пропускную способность для интерфейса.
 
 
