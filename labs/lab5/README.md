@@ -136,11 +136,11 @@
 Какую команду вы бы применили, чтобы просмотреть в таблице маршрутизации только маршруты OSPF?
 
 Команда 
-    show ip route | include via
+    show ip route ospf
     
 Вывод
 
-    R1#sh ip route | i via
+    R1#sh ip route ospf
     O    192.168.2.0/24 [110/65] via 192.168.12.2, 00:14:14, Serial0/0/0
     O    192.168.3.0/24 [110/65] via 192.168.13.2, 00:12:59, Serial0/0/1
     O       192.168.23.0/30 [110/128] via 192.168.12.2, 00:12:59, Serial0/0/0
@@ -208,7 +208,8 @@
 
 Команда
     
-    sh ip ospf inteface
+    sh ip ospf interface brief (отсутствует в CPT)
+    sh ip ospf interface
     
 Вывод
 
@@ -258,4 +259,168 @@
 Эхо-запросы между ПК отправляются успешно
 
 ### Часть 3:	Изменение назначенных идентификаторов маршрутизаторов
+
+#### Шаг 1:	Измените идентификаторы маршрутизатора с помощью loopback-адресов.
+
+a.	Назначьте IP-адрес loopback-интерфейсу 0 для маршрутизатора R1.
+
+Команды
+
+    R1(config)# interface lo0
+    R1(config-if)# ip address 1.1.1.1 255.255.255.255
+    R1(config-if)# end
+    reload
+
+Вывод после перезагрузки
+
+R1#sh ip proto
+
+        R1
+        Routing Protocol is "ospf 1"
+          Outgoing update filter list for all interfaces is not set 
+          Incoming update filter list for all interfaces is not set 
+          Router ID 1.1.1.1
+          Number of areas in this router is 1. 1 normal 0 stub 0 nssa
+          Maximum path: 4
+          Routing for Networks:
+            192.168.1.0 0.0.0.255 area 0
+            192.168.12.0 0.0.0.3 area 0
+            192.168.13.0 0.0.0.3 area 0
+          Routing Information Sources:  
+            Gateway         Distance      Last Update 
+            1.1.1.1              110      00:00:09
+            2.2.2.2              110      00:00:09
+            3.3.3.3              110      00:00:09
+            192.168.13.1         110      00:16:41
+            192.168.23.1         110      00:01:18
+            192.168.23.2         110      00:00:47
+          Distance: (default is 110)
+
+f.	Введите команду show ip ospf neighbor, чтобы просмотреть изменения идентификаторов соседних маршрутизаторов.
+   
+Вывод
+
+        R1#sh ip ospf  neighbor 
+        Neighbor ID     Pri   State           Dead Time   Address         Interface
+        2.2.2.2           0   FULL/  -        00:00:31    192.168.12.2    Serial0/0/0
+        3.3.3.3           0   FULL/  -        00:00:30    192.168.13.2    Serial0/0/1
+
+Шаг 2:	Измените идентификатор маршрутизатора R1 с помощью команды router-id.
+
+Предпочтительным методом настройки идентификатора маршрутизатора является команда router-id.
+
+Команды
+
+    R1(config)# router ospf 1
+    R1(config-router)# router-id 11.11.11.11
+    Reload or use "clear ip ospf process" command, for this to take effect
+    R1(config)# end
+    clear ip ospf process
+    
+Вывод
+
+        R1#sh ip proto
+        Routing Protocol is "ospf 1"
+          Outgoing update filter list for all interfaces is not set 
+          Incoming update filter list for all interfaces is not set 
+          Router ID 11.11.11.11
+          Number of areas in this router is 1. 1 normal 0 stub 0 nssa
+          Maximum path: 4
+          Routing for Networks:
+            192.168.1.0 0.0.0.255 area 0
+            192.168.12.0 0.0.0.3 area 0
+            192.168.13.0 0.0.0.3 area 0
+          Routing Information Sources:  
+            Gateway         Distance      Last Update 
+            1.1.1.1              110      00:06:52
+            2.2.2.2              110      00:01:09
+            3.3.3.3              110      00:00:32
+            11.11.11.11          110      00:00:15
+            22.22.22.22          110      00:00:18
+            33.33.33.33          110      00:00:15
+            192.168.13.1         110      00:23:23
+            192.168.23.1         110      00:08:00
+            192.168.23.2         110      00:07:30
+          Distance: (default is 110)
+        ...
+        R1#sh ip os
+        R1#sh ip ospf n
+        R1#sh ip ospf neighbor 
+        Neighbor ID     Pri   State           Dead Time   Address         Interface
+        22.22.22.22       0   FULL/  -        00:00:30    192.168.12.2    Serial0/0/0
+        33.33.33.33       0   FULL/  -        00:00:39    192.168.13.2    Serial0/0/1
+    
+
+### Часть 4:	Настройка пассивных интерфейсов OSPF
+
+#### Шаг 1:	Настройте пассивный интерфейс.
+
+Команды
+
+    R1(config)# router ospf 1
+    R1(config-router)# passive-interface g0/0
+    show ip ospf interface g0/0
+    
+ Вывод
+ 
+     R1#sh ip ospf interface g0/0
+    GigabitEthernet0/0 is up, line protocol is up
+      Internet address is 192.168.1.1/24, Area 0
+      Process ID 1, Router ID 11.11.11.11, Network Type BROADCAST, Cost: 1
+      Transmit Delay is 1 sec, State WAITING, Priority 1
+      No designated router on this network
+      No backup designated router on this network
+      Timer intervals configured, Hello 10, Dead 40, Wait 40, Retransmit 5
+        No Hellos (Passive interface)
+      Index 1/1, flood queue length 0
+      Next 0x0(0)/0x0(0)
+      Last flood scan length is 1, maximum is 1
+      Last flood scan time is 0 msec, maximum is 0 msec
+      Neighbor Count is 0, Adjacent neighbor count is 0
+      Suppress hello for 0 neighbor(s)
+
+
+Шаг 2:	Настройте на маршрутизаторе пассивный интерфейс в качестве интерфейса по умолчанию.
+
+Команды 
+
+        R2(config)# router ospf 1
+        R2(config-router)# passive-interface default
+        ...
+        R2(config)# router ospf 1
+        R2(config-router)# no passive-interface default
+
+Какой интерфейс использует R3 для маршрута к сети 192.168.2.0/24? Serial0/0/0
+
+Чему равна суммарная метрика стоимости для сети 192.168.2.0/24 на R3? 129
+
+Отображается ли маршрутизатор R2 как соседнее устройство OSPF на маршрутизаторе R1? ДА 
+
+Отображается ли маршрутизатор R2 как соседнее устройство OSPF на маршрутизаторе R3? ДА
+
+Что дает вам эта информация?
+
+Эта информация говорит о том, что маршруты между маршрутизаторами восстановились.
+
+h.	Настройте интерфейс S0/0/1 маршрутизатора R2 так, чтобы разрешить ему объявлять маршруты OSPF. Ниже запишите используемые команды.
+
+Команды
+        
+        conf t
+        int s0/0/1
+        ip ospf 1 area 0
+        
+Какой интерфейс использует R3 для маршрута к сети 192.168.2.0/24? s0/0/1
+
+Чему равна суммарная метрика стоимости для сети 192.168.2.0/24 на маршрутизаторе R3? 65 Как она была рассчитана? Исходя из доступной полосы пропускания последовательного интерфейса и интерфейса g0/0
+
+Отображается ли маршрутизатор R2 как сосед OSPF для маршрутизатора R3? ДА
+
+
+### Часть 5:	Изменение метрик OSPF
+
+#### Шаг 1:	Измените заданную пропускную способность для маршрутизаторов.
+
+
+
 
