@@ -43,7 +43,7 @@ s0/0/0 находятся в зоне 0
 
 #### Шаг 2:	Настройте протокол OSPF на маршрутизаторе R1.
 
-Команды
+Команды на R1
 
     conf t
     router ospf 1
@@ -55,3 +55,69 @@ s0/0/0 находятся в зоне 0
     passive-interface loopback 2
     ip route 209.165.200.224 255.255.255.252 loopback 0 
     default-information originate 
+
+Вывод
+
+    R1#sh ip protocols 
+    Routing Protocol is "ospf 1"
+      Outgoing update filter list for all interfaces is not set 
+      Incoming update filter list for all interfaces is not set 
+      Router ID 1.1.1.1
+      Number of areas in this router is 2. 2 normal 0 stub 0 nssa
+      Maximum path: 4
+      Routing for Networks:
+        192.168.1.0 0.0.0.255 area 1
+        192.168.2.0 0.0.0.255 area 1
+        192.168.12.0 0.0.0.3 area 0
+      Passive Interface(s): 
+        Loopback1
+        Loopback2
+      Routing Information Sources:  
+        Gateway         Distance      Last Update 
+        1.1.1.1              110      00:04:02
+      Distance: (default is 110)
+      
+#### Шаг 3:	Настройте протокол OSPF на маршрутизаторе R2.
+
+Команды на R2
+
+    conf t
+    router ospf 1
+    router-id 2.2.2.2
+    network 192.168.6.0 0.0.0.255 area 3
+    network 192.168.12.0 0.0.0.3 area 0
+    network 192.168.23.0 0.0.0.3 area 3
+    passive-interface loopback 6
+
+Вывод
+
+    R2# sh ip protocols 
+    Routing Protocol is "ospf 1"
+      Outgoing update filter list for all interfaces is not set 
+      Incoming update filter list for all interfaces is not set 
+      Router ID 2.2.2.2
+      Number of areas in this router is 2. 2 normal 0 stub 0 nssa
+      Maximum path: 4
+      Routing for Networks:
+        192.168.6.0 0.0.0.255 area 3
+        192.168.23.0 0.0.0.3 area 3
+        192.168.12.0 0.0.0.3 area 0
+      Passive Interface(s): 
+        Loopback6
+      Routing Information Sources:  
+        Gateway         Distance      Last Update 
+        1.1.1.1              110      00:01:15
+        2.2.2.2              110      00:01:15
+      Distance: (default is 110)
+
+    R2#sh ip route ospf 
+         192.168.1.0/32 is subnetted, 1 subnets
+    O IA    192.168.1.1 [110/782] via 192.168.12.1, 00:03:28, Serial0/0/0
+         192.168.2.0/32 is subnetted, 1 subnets
+    O IA    192.168.2.1 [110/782] via 192.168.12.1, 00:03:28, Serial0/0/0
+
+    R2#sh ip ospf neighbor 
+    Neighbor ID     Pri   State           Dead Time   Address         Interface
+    1.1.1.1           0   FULL/  -        00:00:30    192.168.12.1    Serial0/0/0
+    
+    
