@@ -121,3 +121,51 @@ s0/0/0 находятся в зоне 0
     1.1.1.1           0   FULL/  -        00:00:30    192.168.12.1    Serial0/0/0
     
     
+#### Шаг 4:	Настройте протокол OSPF на маршрутизаторе R3.
+
+Команды на R3
+
+    conf t
+    router ospf 1
+    router-id 3.3.3.3
+    network 192.168.4.0 0.0.0.255 area 3
+    network 192.168.5.0 0.0.0.255 area 3
+    network 192.168.23.0 0.0.0.3 area 3
+    passive-interface loopback 4
+    passive-interface loopback 5
+    
+Вывод 
+
+    R3#sh ip protocols 
+    Routing Protocol is "ospf 1"
+      Outgoing update filter list for all interfaces is not set 
+      Incoming update filter list for all interfaces is not set 
+      Router ID 3.3.3.3
+      Number of areas in this router is 1. 1 normal 0 stub 0 nssa
+      Maximum path: 4
+      Routing for Networks:
+        192.168.4.0 0.0.0.255 area 3
+        192.168.5.0 0.0.0.255 area 3
+        192.168.23.0 0.0.0.3 area 3
+      Passive Interface(s): 
+        Loopback4
+        Loopback5
+      Routing Information Sources:  
+        Gateway         Distance      Last Update 
+        2.2.2.2              110      00:01:47
+        3.3.3.3              110      00:01:47
+      Distance: (default is 110)
+      
+    R3#sh ip route ospf 
+         192.168.1.0/32 is subnetted, 1 subnets
+    O IA    192.168.1.1 [110/1563] via 192.168.23.1, 00:02:15, Serial0/0/1
+         192.168.2.0/32 is subnetted, 1 subnets
+    O IA    192.168.2.1 [110/1563] via 192.168.23.1, 00:02:15, Serial0/0/1
+         192.168.6.0/32 is subnetted, 1 subnets
+    O       192.168.6.1 [110/782] via 192.168.23.1, 00:02:15, Serial0/0/1
+         192.168.12.0/30 is subnetted, 1 subnets
+    O IA    192.168.12.0 [110/1562] via 192.168.23.1, 00:02:15, Serial0/0/1
+    
+    R3#sh ip ospf neighbor 
+    Neighbor ID     Pri   State           Dead Time   Address         Interface
+    2.2.2.2           0   FULL/  -        00:00:30    192.168.23.1    Serial0/0/1
