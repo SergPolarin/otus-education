@@ -53,7 +53,7 @@ s0/0/0 находятся в зоне 0
     network 192.168.12.0 0.0.0.3 area 0
     passive-interface loopback 1
     passive-interface loopback 2
-    ip route 209.165.200.224 255.255.255.252 loopback 0 
+    ip route 0.0.0.0 0.0.0.0 loopback 0 
     default-information originate 
 
 Вывод
@@ -63,6 +63,9 @@ s0/0/0 находятся в зоне 0
       Outgoing update filter list for all interfaces is not set 
       Incoming update filter list for all interfaces is not set 
       Router ID 1.1.1.1
+      It is an autonomous system boundary router
+      Redistributing External Routes from,
+        static 
       Number of areas in this router is 2. 2 normal 0 stub 0 nssa
       Maximum path: 4
       Routing for Networks:
@@ -74,7 +77,8 @@ s0/0/0 находятся в зоне 0
         Loopback2
       Routing Information Sources:  
         Gateway         Distance      Last Update 
-        1.1.1.1              110      00:04:02
+        1.1.1.1              110      00:06:08
+        2.2.2.2              110      00:06:08
       Distance: (default is 110)
       
 #### Шаг 3:	Настройте протокол OSPF на маршрутизаторе R2.
@@ -169,3 +173,6 @@ s0/0/0 находятся в зоне 0
     R3#sh ip ospf neighbor 
     Neighbor ID     Pri   State           Dead Time   Address         Interface
     2.2.2.2           0   FULL/  -        00:00:30    192.168.23.1    Serial0/0/1
+
+#### Шаг 5:	Убедитесь в правильности настройки протокола OSPF и в установлении отношений смежности между маршрутизаторами.
+
