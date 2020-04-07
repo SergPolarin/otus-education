@@ -1,7 +1,7 @@
 ## Диагностика неполадок подключения EIGRP
 
-![](TShooting1)
+![](TShooting1.png)
 
-![](TShooting2)
+![](TShooting2.png)
 
-![](TShooting3)
+![](TShooting3.png)
