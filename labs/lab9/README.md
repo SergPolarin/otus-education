@@ -126,3 +126,70 @@ R26
       2   60.26.28.1   0.570 ms  0.438 ms  0.408 ms             ## Изменился next-hop
       3   52.25.26.1   0.688 ms  0.581 ms  0.548 ms             ## Добавился еще один маршрут
       4   *60.25.27.2   0.743 ms (ICMP type:3, code:3, Destination port unreachable)  * 
+
+
+### Настроить отслеживание линка через технологию IP SLA
+
+Настройка на маршрутизаторе R28
+
+Команды
+
+      conf t
+      ---- удаляем предыдущую настройку next-hop----
+      route-map VPC30 permit 10
+      no set ip next-hop 60.26.28.1
+      exit
+      
+      --- настраиваем ip sla 1 ---------------------
+      ip sla 1
+      icmp-echo 60.26.28.1 source-ip 60.26.28.2
+      threshold 2
+      frequency 2
+      timeout 3
+      exit
+      ip sla schedule 1 life forever start-time now
+      track 1 ip sla 1 reachability
+      
+            --- настраиваем ip sla 2 ---------------------
+      ip sla 2
+      icmp-echo 60.25.28.1 source-ip 60.25.28.2
+      threshold 2
+      frequency 3
+      timeout 1000
+      exit
+      ip sla schedule 2 life forever start-time now
+      track 2 ip sla 2 reachability
+      
+      ------ настраиваем route-map VPC30 -----------
+      route-map VPC30 permit 10
+      set ip next-hop verify-availability 60.26.28.1 10 track 1
+      set ip next-hop verify-availability 60.25.28.1 20 track 2
+      
+      
+  Проверка настройки на VPC30
+  
+  Первоначальная трассировка:
+  
+      VPC30> trace 60.25.27.2                                                                                                             
+      trace to 60.25.27.2, 8 hops max, press Ctrl+C to stop                                                                    
+      1   192.168.1.1   0.538 ms  0.366 ms  0.379 ms                                                                          
+      2   60.26.28.1   0.551 ms  0.518 ms  0.528 ms                                                                           
+      3   52.25.26.1   0.655 ms  0.526 ms  0.519 ms                                                                           
+      4   *60.25.27.2   0.605 ms (ICMP type:3, code:3, Destination port unreachable)  * 
+      
+Трассировка после выключение интерфейса e0/2 на маршрутизаторе R26
+      
+      VPC30> trace 60.25.27.2                                                                                                 
+      trace to 60.25.27.2, 8 hops max, press Ctrl+C to stop                                                                    
+      1   192.168.1.1   0.530 ms  0.325 ms  0.295 ms                                                                          
+      2     *  *  *                                                                                                           
+      3   *60.25.27.2   0.853 ms (ICMP type:3, code:3, Destination port unreachable)  *
+      
+ICMP-запросы при выключенном интерфейсе e0/2 на маршрутизаторе R26
+
+      VPC30> ping 60.25.27.2                                                                                                                                                                                                                                                                                                                                                                                     
+      84 bytes from 60.25.27.2 icmp_seq=1 ttl=253 time=0.777 ms                                                                                                                                                                                                                          
+      84 bytes from 60.25.27.2 icmp_seq=2 ttl=253 time=0.896 ms                                                                                                                                                                                                                  
+      84 bytes from 60.25.27.2 icmp_seq=3 ttl=253 time=0.802 ms                                                               
+      84 bytes from 60.25.27.2 icmp_seq=4 ttl=253 time=0.940 ms                                                               
+      84 bytes from 60.25.27.2 icmp_seq=5 ttl=253 time=0.987 ms 
