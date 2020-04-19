@@ -187,7 +187,7 @@ R26
       
 ICMP-запросы при выключенном интерфейсе e0/2 на маршрутизаторе R26
 
-      VPC30> ping 60.25.27.2                                                                                                                                                                                                                                                                                                                                                                                     
+      VPC30> ping 60.25.27.2  
       84 bytes from 60.25.27.2 icmp_seq=1 ttl=253 time=0.777 ms  
       84 bytes from 60.25.27.2 icmp_seq=2 ttl=253 time=0.896 ms 
       84 bytes from 60.25.27.2 icmp_seq=3 ttl=253 time=0.802 ms  
