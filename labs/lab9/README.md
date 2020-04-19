@@ -170,26 +170,26 @@ R26
   
   Первоначальная трассировка:
   
-      VPC30> trace 60.25.27.2                                                                                                             
-      trace to 60.25.27.2, 8 hops max, press Ctrl+C to stop                                                                    
-      1   192.168.1.1   0.538 ms  0.366 ms  0.379 ms                                                                          
-      2   60.26.28.1   0.551 ms  0.518 ms  0.528 ms                                                                           
-      3   52.25.26.1   0.655 ms  0.526 ms  0.519 ms                                                                           
+      VPC30> trace 60.25.27.2 
+      trace to 60.25.27.2, 8 hops max, press Ctrl+C to stop  
+      1   192.168.1.1   0.538 ms  0.366 ms  0.379 ms  
+      2   60.26.28.1   0.551 ms  0.518 ms  0.528 ms  
+      3   52.25.26.1   0.655 ms  0.526 ms  0.519 ms 
       4   *60.25.27.2   0.605 ms (ICMP type:3, code:3, Destination port unreachable)  * 
       
 Трассировка после выключение интерфейса e0/2 на маршрутизаторе R26
       
-      VPC30> trace 60.25.27.2                                                                                                 
-      trace to 60.25.27.2, 8 hops max, press Ctrl+C to stop                                                                    
-      1   192.168.1.1   0.530 ms  0.325 ms  0.295 ms                                                                          
-      2     *  *  *                                                                                                           
+      VPC30> trace 60.25.27.2    
+      trace to 60.25.27.2, 8 hops max, press Ctrl+C to stop  
+      1   192.168.1.1   0.530 ms  0.325 ms  0.295 ms  
+      2     *  *  *    
       3   *60.25.27.2   0.853 ms (ICMP type:3, code:3, Destination port unreachable)  *
       
 ICMP-запросы при выключенном интерфейсе e0/2 на маршрутизаторе R26
 
       VPC30> ping 60.25.27.2                                                                                                                                                                                                                                                                                                                                                                                     
-      84 bytes from 60.25.27.2 icmp_seq=1 ttl=253 time=0.777 ms                                                                                                                                                                                                                          
-      84 bytes from 60.25.27.2 icmp_seq=2 ttl=253 time=0.896 ms                                                                                                                                                                                                                  
-      84 bytes from 60.25.27.2 icmp_seq=3 ttl=253 time=0.802 ms                                                               
-      84 bytes from 60.25.27.2 icmp_seq=4 ttl=253 time=0.940 ms                                                               
+      84 bytes from 60.25.27.2 icmp_seq=1 ttl=253 time=0.777 ms  
+      84 bytes from 60.25.27.2 icmp_seq=2 ttl=253 time=0.896 ms 
+      84 bytes from 60.25.27.2 icmp_seq=3 ttl=253 time=0.802 ms  
+      84 bytes from 60.25.27.2 icmp_seq=4 ttl=253 time=0.940 ms  
       84 bytes from 60.25.27.2 icmp_seq=5 ttl=253 time=0.987 ms 
