@@ -104,10 +104,16 @@ R26
       permit host 192.168.1.2
       deny any
       
+      ipv6 access-list VPC_30    
+      permit ipv6 host 2074:AA74:28:28::2 any  
+      deny ipv6 any any
+      
       -----настройка route-map------
       route-map VPC30 permit 10
       match ip address VPC30
+      match ipv6 address VPC_30
       set ip next-hop 60.26.28.1
+      set ipv6 next-hop 2520:AA60:26:28::1
       
       ----настройка int e0/2--------
      int e0/2
@@ -115,11 +121,14 @@ R26
  
 Вывод
 
-      R28(config-route-map)#do sh run | s route-map
-      ip policy route-map VPC30
-      route-map VPC30 permit 10 
-      match ip address VPC30
-      set ip next-hop 60.26.28.1
+     R28#sh run | s route-m  
+     ip policy route-map VPC30  
+     route-map VPC30 permit 10  
+     match ip address VPC30    
+     match ipv6 address VPC_30    
+     set ip next-hop verify-availability 60.26.28.1 10 track 1 
+     set ip next-hop verify-availability 60.25.28.1 20 track 2 
+     set ipv6 next-hop 2520:AA60:26:28::1  
       
 Трассировка маршрута с VPC31
 
@@ -139,6 +148,13 @@ R26
        2   60.25.28.1   0.525 ms  0.434 ms  0.405 ms
        3   *60.25.27.2   0.669 ms (ICMP type:3, code:3, Destination port unreachable)  *
        
+       
+       VPC31> trace 2520:aa60:25:27::2    
+       trace to 2520:aa60:25:27::2, 64 hops max  
+       1 2074:aa74:28:28::1   0.480 ms  0.213 ms  0.239 ms  
+       2 2520:aa60:25:28::1   0.398 ms  *  *     
+       3 2520:aa60:25:27::2   0.810 ms  0.614 ms  0.515 ms
+       
 Трассировка маршрута с VPC30
 
 До настройки PBR
@@ -157,6 +173,13 @@ R26
       2   60.26.28.1   0.570 ms  0.438 ms  0.408 ms             ## Изменился next-hop
       3   52.25.26.1   0.688 ms  0.581 ms  0.548 ms             ## Добавился еще один маршрут
       4   *60.25.27.2   0.743 ms (ICMP type:3, code:3, Destination port unreachable)  * 
+
+      VPC30> trace 2520:aa60:25:27::2   
+      trace to 2520:aa60:25:27::2, 64 hops max  
+      1 2074:aa74:28:28::1   7.955 ms  0.350 ms  0.253 ms 
+      2 2520:aa60:26:28::1   0.811 ms  0.580 ms  0.536 ms 
+      3 2520:aa60:25:26::1   0.711 ms  0.590 ms  0.600 ms 
+      4 2520:aa60:25:27::2   0.863 ms  0.617 ms  0.751 ms  
 
 
 ### Настроить отслеживание линка через технологию IP SLA
