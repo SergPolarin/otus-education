@@ -2,7 +2,7 @@
 
 ## Топология
 
-![](topology1.png)
+![](topology.png)
 
 ## Адресация
 
