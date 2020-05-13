@@ -27,3 +27,122 @@
 
 1. Настроить OSPF для IPv6, сохранив ту же логику работы(метрики, таймеры, фильтры), что OSPF для IPv4
 2. План работы и изменения зафиксированы в документации 
+
+## Настройки маршрутизаторов
+
+### Маршрутизатор R1
+
+    interface Ethernet0/0
+     no ip address
+     ipv6 address FE80::1 link-local
+     ipv6 address 2001:AA::1/64
+     ipv6 ospf 1 area 0
+    !
+    interface Ethernet0/1
+     no ip address
+     ipv6 address FE80::1 link-local
+     ipv6 address 2001:C::1/64
+     ipv6 ospf 1 area 10
+    !
+    interface Ethernet0/2
+     no ip address
+     ipv6 address FE80::1 link-local
+     ipv6 address 2001:A::1/64
+     ipv6 ospf 1 area 0
+    !
+    ipv6 router ospf 1
+     router-id 1.1.1.1
+     area 10 virtual-link 5.5.5.5
+
+### Маршрутизатор R2
+
+    interface Ethernet0/0
+     no ip address
+     ipv6 address FE80::2 link-local
+     ipv6 address 2001:B::1/64
+     ipv6 ospf 1 area 1
+    !
+    interface Ethernet0/1
+     no ip address
+     ipv6 address FE80::2 link-local
+     ipv6 address 2001:AAA::1/64
+     ipv6 ospf 1 area 0
+    !
+    interface Ethernet0/2
+     no ip address
+     ipv6 address FE80::2 link-local
+     ipv6 address 2001:A::2/64
+     ipv6 ospf 1 area 0
+    !
+    ipv6 router ospf 1
+     router-id 2.2.2.2
+
+### Маршрутизатор R3
+
+    interface Ethernet0/0
+     no ip address
+     ipv6 address FE80::3 link-local
+     ipv6 address 2001:AA::2/64
+     ipv6 ospf 1 area 0
+    !
+    interface Ethernet0/1
+     no ip address
+     ipv6 address FE80::3 link-local
+     ipv6 address 2001:AAA::2/64
+     ipv6 ospf 1 area 0
+    !
+    ipv6 router ospf 1
+     router-id 3.3.3.3
+
+### Маршрутизатор R4
+
+    interface Loopback1
+     no ip address
+     ipv6 address FE80::4 link-local
+     ipv6 address 2001:F::A1/128
+     ipv6 ospf 1 area 1
+    !
+    interface Ethernet0/0
+     no ip address
+     ipv6 address FE80::4 link-local
+     ipv6 address 2001:B::2/64
+     ipv6 ospf 1 area 1
+    !
+    ipv6 router ospf 1
+     router-id 4.4.4.4
+
+### Маршрутизатор R5
+
+    interface Ethernet0/0
+     no ip address
+     ipv6 address FE80::5 link-local
+     ipv6 address 2001:D::1/64
+     ipv6 ospf 1 area 100
+    !
+    interface Ethernet0/1
+     no ip address
+     ipv6 address FE80::5 link-local
+     ipv6 address 2001:C::2/64
+     ipv6 ospf 1 area 10
+    !
+    ipv6 router ospf 1
+     router-id 5.5.5.5
+     area 10 virtual-link 1.1.1.1
+     
+### Маршрутизатор R6
+
+    interface Loopback1
+     no ip address
+     ipv6 address FE80::6 link-local
+     ipv6 address 2001:E::A100/128
+     ipv6 ospf 1 area 100
+    !
+    interface Ethernet0/0
+     no ip address
+     ipv6 address FE80::6 link-local
+     ipv6 address 2001:D::2/64
+     ipv6 ospf 1 area 100
+    !
+    ipv6 router ospf 1
+     router-id 6.6.6.6
+
