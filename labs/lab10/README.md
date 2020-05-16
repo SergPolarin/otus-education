@@ -49,6 +49,11 @@
      ipv6 address 2077:13:14::2/64
      ipv6 ospf 1 area 0
     !
+    interface Ethernet0/2
+     ip address 43.22.14.2 255.255.255.252
+     ipv6 address FE80::14 link-local
+     ipv6 address 2043:22:14::2/64
+    !
     interface Ethernet0/3
      ip address 77.14.19.1 255.255.255.252
      ipv6 address FE80::14 link-local
@@ -61,31 +66,27 @@
      network 77.12.14.0 0.0.0.3 area 0
      network 77.13.14.0 0.0.0.3 area 0
      network 77.14.19.0 0.0.0.3 area 101
+     default-information originate
     !
+    ipv6 route ::/0 2043:22:14::1
     ipv6 router ospf 1
      router-id 14.14.14.14
      area 101 stub no-summary
      
     ********************************таблица маршрутизации IPv4***********************
      
-    O*E2  0.0.0.0/0 [110/1] via 77.13.14.1, 05:22:21, Ethernet0/1
-                    [110/1] via 77.12.14.1, 05:22:21, Ethernet0/0
-          77.0.0.0/8 is variably subnetted, 9 subnets, 2 masks
-    O        77.12.15.0/30 [110/20] via 77.12.14.1, 05:22:21, Ethernet0/0
-    O        77.13.15.0/30 [110/20] via 77.13.14.1, 05:22:21, Ethernet0/1
-    O IA     77.15.20.0/30 [110/30] via 77.13.14.1, 05:16:29, Ethernet0/1
-                           [110/30] via 77.12.14.1, 05:16:29, Ethernet0/0
-    O IA  172.16.0.0/16 [110/20] via 77.13.14.1, 05:22:21, Ethernet0/1
-                        [110/20] via 77.12.14.1, 05:22:21, Ethernet0/0
+      77.0.0.0/8 is variably subnetted, 9 subnets, 2 masks
+    O        77.12.15.0/30 [110/20] via 77.12.14.1, 2d19h, Ethernet0/0
+    O        77.13.15.0/30 [110/20] via 77.13.14.1, 2d19h, Ethernet0/1
+    O IA     77.15.20.0/30 [110/30] via 77.13.14.1, 2d19h, Ethernet0/1
+                           [110/30] via 77.12.14.1, 2d19h, Ethernet0/0
+    O IA  172.16.0.0/16 [110/20] via 77.13.14.1, 2d19h, Ethernet0/1
+                        [110/20] via 77.12.14.1, 2d19h, Ethernet0/0
           192.168.1.0/32 is subnetted, 1 subnets
-    O        192.168.1.254 [110/11] via 77.14.19.2, 05:22:11, Ethernet0/3
+    O        192.168.1.254 [110/11] via 77.14.19.2, 2d19h, Ethernet0/3
     R14#
 
     ********************************таблица маршрутизации IPv6***********************
-    
-    OE2 ::/0 [110/1], tag 1
-         via FE80::13, Ethernet0/1
-         via FE80::12, Ethernet0/0
     O   2077:12:15::/64 [110/20]
          via FE80::12, Ethernet0/0
     O   2077:13:15::/64 [110/20]
@@ -93,6 +94,7 @@
     OI  2077:15:20::/64 [110/30]
          via FE80::13, Ethernet0/1
          via FE80::12, Ethernet0/0
+
 
 
 ### Маршрутизатор R15
