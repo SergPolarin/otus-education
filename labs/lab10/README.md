@@ -127,7 +127,6 @@
     router ospf 1
      router-id 15.15.15.15
      area 102 filter-list prefix DENYAREA101 in
-     redistribute static subnets
      network 77.12.15.0 0.0.0.3 area 0
      network 77.13.15.0 0.0.0.3 area 0
      network 77.15.20.0 0.0.0.3 area 102
