@@ -64,3 +64,632 @@
 5. Настроить VLAN управления для сетевых устройств
 6. Настроить сети офисов так, чтобы не возникало broadcast штормов, а использование линков было максимально оптимизировано
 7. Использовать ipv4 и ipv6
+
+## R12
+
+    Building configuration...
+
+    Current configuration : 1554 bytes
+    !
+    version 15.2
+    service timestamps debug datetime msec
+    service timestamps log datetime msec
+    no service password-encryption
+    !
+    hostname R12
+    !
+    boot-start-marker
+    boot-end-marker
+    !
+    !
+    !
+    no aaa new-model
+    clock timezone EET 2 0
+    mmi polling-interval 60
+    no mmi auto-configure
+    no mmi pvc
+    mmi snmp-timeout 180
+  
+    !
+    ip cef
+    ipv6 unicast-routing
+    ipv6 cef
+    !
+    multilink bundle-name authenticated
+    !
+   
+    !
+    redundancy
+    !
+    !
+    interface Ethernet0/0
+     ip address 172.16.0.12 255.255.0.0
+     standby version 2
+     standby 1 ip 172.16.0.1
+     standby 1 priority 150
+     standby 1 preempt
+    !
+    interface Ethernet0/1
+     no ip address
+     shutdown
+    !
+    interface Ethernet0/2
+     ip address 77.12.14.1 255.255.255.252
+     ipv6 address FE80::12 link-local
+     ipv6 address 2077:12:14::1/64
+     ipv6 ospf 1 area 0
+    !
+    interface Ethernet0/3
+     ip address 77.12.15.1 255.255.255.252
+     ipv6 address FE80::12 link-local
+     ipv6 address 2077:12:15::1/64
+     ipv6 ospf 1 area 0
+    !
+    interface Ethernet1/0
+     no ip address
+     shutdown
+    !
+    interface Ethernet1/1
+     no ip address
+     shutdown
+    !
+    interface Ethernet1/2
+     no ip address
+     shutdown
+    !
+    interface Ethernet1/3
+     no ip address
+     shutdown
+    !
+    router ospf 1
+     router-id 12.12.12.12
+     area 10 stub
+     network 77.12.14.0 0.0.0.3 area 0
+     network 77.12.15.0 0.0.0.3 area 0
+     network 172.16.0.0 0.0.0.255 area 10
+    !
+    ip forward-protocol nd
+    !
+    !
+    no ip http server
+    no ip http secure-server
+    !
+    ipv6 router ospf 1
+     router-id 12.12.12.12
+     area 10 stub
+    !
+    control-plane
+
+    !
+    line con 0
+     logging synchronous
+    line aux 0
+    line vty 0 4
+     login
+     transport input all
+    !
+    !
+    end
+
+## R13
+
+
+    Building configuration...
+
+    Current configuration : 1513 bytes
+    !
+    version 15.2
+    service timestamps debug datetime msec
+    service timestamps log datetime msec
+    no service password-encryption
+    !
+    hostname R13
+    !
+    boot-start-marker
+    boot-end-marker
+    !
+    !
+    !
+    no aaa new-model
+    clock timezone EET 2 0
+    mmi polling-interval 60
+    no mmi auto-configure
+    no mmi pvc
+    mmi snmp-timeout 180
+    !
+    !
+    !
+    ip cef
+    ipv6 unicast-routing
+    ipv6 cef
+    !
+    multilink bundle-name authenticated
+    !
+    !
+    redundancy
+    !
+    !
+    interface Ethernet0/0
+     ip address 172.16.0.13 255.255.0.0
+     standby version 2
+     standby 1 ip 172.16.0.1
+    !
+    interface Ethernet0/1
+     no ip address
+     shutdown
+    !
+    interface Ethernet0/2
+     ip address 77.13.15.1 255.255.255.252
+     ipv6 address FE80::13 link-local
+     ipv6 address 2077:13:15::1/64
+     ipv6 ospf 1 area 0
+    !
+    interface Ethernet0/3
+     ip address 77.13.14.1 255.255.255.252
+     ipv6 address FE80::13 link-local
+     ipv6 address 2077:13:14::1/64
+     ipv6 ospf 1 area 0
+    !
+    interface Ethernet1/0
+     no ip address
+     shutdown
+    !
+    interface Ethernet1/1
+     no ip address
+     shutdown
+    !
+    interface Ethernet1/2
+     no ip address
+     shutdown
+    !
+    interface Ethernet1/3
+     no ip address
+     shutdown
+    !
+    router ospf 1
+     router-id 13.13.13.13
+     area 10 stub
+     network 77.13.14.0 0.0.0.3 area 0
+     network 77.13.15.0 0.0.0.3 area 0
+     network 172.16.0.0 0.0.255.255 area 10
+    !
+    ip forward-protocol nd
+    !
+    !
+    no ip http server
+    no ip http secure-server
+    !
+    ipv6 router ospf 1
+     router-id 13.13.13.13
+     area 10 stub
+    !
+    !
+    !
+    !
+    control-plane
+    !
+    !
+    !
+    !
+    !
+    !
+    !
+    line con 0
+     logging synchronous
+    line aux 0
+    line vty 0 4
+     login
+     transport input all
+    !
+    !
+    end
+    
+## SW4
+
+    Building configuration...
+
+    Current configuration : 1388 bytes
+    !
+    ! Last configuration change at 22:10:31 EET Thu May 21 2020
+    !
+    version 15.2
+    service timestamps debug datetime msec
+    service timestamps log datetime msec
+    no service password-encryption
+    service compress-config
+    !
+    hostname SW4
+    !
+    boot-start-marker
+    boot-end-marker
+    !
+    !
+    !
+    no aaa new-model
+    clock timezone EET 2 0
+    !
+    !
+    !
+    !
+    !
+    !
+    !
+    !
+    ip cef
+    no ipv6 cef
+    !
+    !
+    !
+    spanning-tree mode rapid-pvst
+    spanning-tree extend system-id
+    !
+    vlan internal allocation policy ascending
+    !
+    !
+    !
+    !
+    !
+    !
+    !
+    !
+    !
+    !
+    !
+    !
+    !
+    interface Port-channel1
+    !
+    interface Ethernet0/0
+     switchport trunk encapsulation dot1q
+    !
+    interface Ethernet0/1
+     switchport access vlan 10
+     switchport mode access
+    !
+    interface Ethernet0/2
+     channel-group 1 mode on
+    !
+    interface Ethernet0/3
+     channel-group 1 mode on
+    !
+    interface Ethernet1/0
+    !
+    interface Ethernet1/1
+    !
+    interface Ethernet1/2
+    !
+    interface Ethernet1/3
+    !
+    interface Vlan1
+     ip address 192.168.1.14 255.255.255.0
+    !
+    interface Vlan10
+     ip address 172.16.0.3 255.255.0.0
+    !
+    interface Vlan11
+     ip address 192.168.11.253 255.255.255.0
+     standby version 2
+     standby 1 ip 192.168.11.1
+     standby 1 priority 150
+    !
+    interface Vlan17
+     ip address 192.168.17.253 255.255.255.0
+     standby version 2
+     standby 0 preempt
+     standby 1 ip 192.168.17.1
+     standby 1 priority 150
+    !
+    ip forward-protocol nd
+    !
+    no ip http server
+    no ip http secure-server
+    !
+    !
+    !
+    !
+    !
+    !
+    control-plane
+    !
+    !
+    line con 0
+     logging synchronous
+    line aux 0
+    line vty 0 4
+    !
+    !
+    end
+
+## SW5
+
+    Building configuration...
+
+    Current configuration : 1224 bytes
+    !
+    ! Last configuration change at 14:35:44 EET Fri May 22 2020
+    !
+    version 15.2
+    service timestamps debug datetime msec
+    service timestamps log datetime msec
+    no service password-encryption
+    service compress-config
+    !
+    hostname SW5
+    !
+    boot-start-marker
+    boot-end-marker
+    !
+    !
+    !
+    no aaa new-model
+    clock timezone EET 2 0
+    !
+    !
+    !
+    !
+    !
+    !
+    !
+    !
+    ip cef
+    no ipv6 cef
+    !
+    !
+    spanning-tree mode pvst
+    spanning-tree extend system-id
+    !
+    vlan internal allocation policy ascending
+    !
+    !
+    !
+    !
+    !
+    !
+    !
+    !
+    !
+    !
+    !
+    !
+    !
+    interface Port-channel1
+     switchport trunk encapsulation dot1q
+     switchport mode trunk
+    !
+    interface Ethernet0/0
+     switchport trunk encapsulation dot1q
+    !
+    interface Ethernet0/1
+     switchport trunk encapsulation dot1q
+    !
+    interface Ethernet0/2
+     switchport trunk encapsulation dot1q
+     switchport mode trunk
+     channel-group 1 mode on
+    !
+    interface Ethernet0/3
+     switchport trunk encapsulation dot1q
+     switchport mode trunk
+     channel-group 1 mode on
+    !
+    interface Ethernet1/0
+    !
+    interface Ethernet1/1
+    !
+    interface Ethernet1/2
+    !
+    interface Ethernet1/3
+    !
+    interface Vlan1
+     ip address 192.168.1.15 255.255.255.0
+    !
+    ip forward-protocol nd
+    !
+    no ip http server
+    no ip http secure-server
+    !
+    !
+    !
+    !
+    !
+    !
+    control-plane
+    !
+    !
+    line con 0
+     logging synchronous
+    line aux 0
+    line vty 0 4
+     login
+    !
+    !
+    end
+
+## SW3
+
+    Building configuration...
+
+    Current configuration : 1223 bytes
+    !
+    ! Last configuration change at 22:02:14 EET Thu May 21 2020
+    !
+    version 15.2
+    service timestamps debug datetime msec
+    service timestamps log datetime msec
+    no service password-encryption
+    service compress-config
+    !
+    hostname SW3
+    !
+    boot-start-marker
+    boot-end-marker
+    !
+    !
+    !
+    no aaa new-model
+    clock timezone EET 2 0
+    !
+    ip cef
+    no ipv6 cef
+    !
+    !
+    !
+    spanning-tree mode rapid-pvst
+    spanning-tree extend system-id
+    !
+    vlan internal allocation policy ascending
+    !
+    interface Ethernet0/0
+     switchport trunk encapsulation dot1q
+     switchport mode trunk
+    !
+    interface Ethernet0/1
+     switchport trunk encapsulation dot1q
+     switchport mode trunk
+    !
+    interface Ethernet0/2
+     switchport access vlan 11
+     switchport mode access
+    !
+    interface Ethernet0/3
+     switchport access vlan 17
+     switchport mode access
+    !
+    interface Ethernet1/0
+    !
+    interface Ethernet1/1
+    !
+    interface Ethernet1/2
+    !
+    interface Ethernet1/3
+    !
+    interface Vlan1
+     description MANAGEMENT
+     ip address 192.168.1.11 255.255.255.0
+    !
+    interface Vlan11
+     no ip address
+    !
+    interface Vlan17
+     no ip address
+     shutdown
+    !
+    ip forward-protocol nd
+    !
+    no ip http server
+    no ip http secure-server
+    !
+    control-plane
+    !
+    !
+    line con 0
+     logging synchronous
+    line aux 0
+    line vty 0 4
+     login
+    !
+    !
+    end
+
+## SW2
+
+    Building configuration...
+
+    Current configuration : 1121 bytes
+    !
+    ! Last configuration change at 22:01:51 EET Thu May 21 2020
+    !
+    version 15.2
+    service timestamps debug datetime msec
+    service timestamps log datetime msec
+    no service password-encryption
+    service compress-config
+    !
+    hostname SW2
+    !
+    boot-start-marker
+    boot-end-marker
+    !
+    !
+    !
+    no aaa new-model
+    clock timezone EET 2 0
+    !
+    !
+    !
+    !
+    !
+    !
+    !
+    !
+    ip cef
+    no ipv6 cef
+    !
+    !
+    !
+    spanning-tree mode rapid-pvst
+    spanning-tree extend system-id
+    !
+    vlan internal allocation policy ascending
+    !
+    !
+    !
+    !
+    !
+    !
+    !
+    !
+    !
+    !
+    !
+    !
+    !
+    interface Ethernet0/0
+     switchport trunk encapsulation dot1q
+     switchport mode trunk
+    !
+    interface Ethernet0/1
+     switchport trunk encapsulation dot1q
+     switchport mode trunk
+    !
+    interface Ethernet0/2
+     switchport access vlan 17
+     switchport mode access
+    !
+    interface Ethernet0/3
+    !
+    interface Ethernet1/0
+    !
+    interface Ethernet1/1
+    !
+    interface Ethernet1/2
+    !
+    interface Ethernet1/3
+    !
+    interface Vlan1
+     description MANAGEMENT
+     ip address 192.168.1.12 255.255.255.0
+    !
+    interface Vlan17
+     no ip address
+    !
+    ip forward-protocol nd
+    !
+    no ip http server
+    no ip http secure-server
+    !
+    !
+    !
+    !
+    !
+    !
+    control-plane
+    !
+    !
+    line con 0
+     logging synchronous
+    line aux 0
+    line vty 0 4
+    !
+    !
+    end
