@@ -1,5 +1,9 @@
 # Протокол IP. Документация
 
+### Топология и адресация
+
+![](topology.png)
+
 ### Таблица адресации
 
 | ISP        | ASN     | Host | Discription | Interface | IPv4              | IPv6                  | Link-local |
